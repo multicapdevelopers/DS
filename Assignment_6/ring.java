@@ -3,65 +3,78 @@ import java.util.Scanner;
  
 class ring{
     static int n;
-    static int pro[] = new int[100];
-    static int sta[] = new int[100];
-    static int prio[] = new int[100];
-    static int co;
+    static int process[] = new int[100];
+    static int status[] = new int[100];
+    static int priority[] = new int[100];
+    static int coordinator;
      
     public static void main(String args[])throws IOException
     {
-        System.out.println("Enter the number of process");
-        Scanner in = new Scanner(System.in);
-        n = in.nextInt();
-         
-        int i,j,k,l,m;
-         
-        for(i=0;i<n;i++)
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter the number of process: ");
+        n = sc.nextInt();
+                  
+        for(int i=0;i<n;i++)
         {
-            System.out.println("For process "+(i+1)+":");
-            System.out.println("Status:");
-            sta[i]=in.nextInt();
-            System.out.println("Priority");
-            pro[i] = in.nextInt();
+            //System.out.println("For process "+(i+1)+":");
+        	System.out.print("\nEnter process (process no. is same as priority): ");
+            process[i] = sc.nextInt();
+            System.out.print("Status (1 is active and 0 is inactive):");
+            status[i]=sc.nextInt();
+            
         }
         
-        System.out.println("The ring formed is: ");
-        for (i=1;i<=n;i++) {
+        System.out.println("\nThe ring formed is: ");
+        for (int i=1;i<=n;i++) {
         	System.out.print(i + " ->");
         }
         System.out.println("1");
          
-        System.out.println("Which process will initiate election?");
-        int ele = in.nextInt();
+        System.out.print("\nWhich process will initiate election?: ");
+        int initiateElection = sc.nextInt();
+        System.out.println();
          
-        elect(ele);
-        System.out.println("Final coordinator is "+co);
+        election(initiateElection);
+        System.out.println("\n\nFinal coordinator is "+coordinator);
     }
      
-    static void elect(int ele)
+    static void election(int initiateElection)
     {
         
         int i;
         int index = 0;
         int max = 0;
-        for(i=(ele-1);i<=n;i++) {
-        	if(sta[i]==1) {
-        		prio[index] = pro[i];
+        //add from election initiator to the end to priority array
+        for(i=(initiateElection-1);i<n;i++) 
+        {
+        	if(status[i]==1) 
+        	{
+        		priority[index] = process[i];
         		index = index + 1;
         	}
         }
-        for(i=0;i<=ele;i++) {
-        	if(sta[i] == 1) {
-        		prio[index] = pro[i];
+      //add from beginning to the election initiator to priority array
+        for(i=0;i<initiateElection-1;i++) 
+        {
+        	if(status[i] == 1) 
+        	{
+        		priority[index] = process[i];
         		index = index + 1;
         	}
+        }
+        //print priority array and find the greatest of all
+        System.out.print("the priority array is: ");
+        for(i=0;i<index;i++) 
+        {
+        	
+        	if(priority[i]>max) 
+        	{
+        		max = priority[i];
+        	}
+        	System.out.print(priority[i] + " ");
         }
         
-        for(i=0;i<=index;i++) {
-        	if(prio[i]>max) {
-        		max = prio[i];
-        	}
-        }
-        co = max;
+        coordinator = max;
     }
 }
